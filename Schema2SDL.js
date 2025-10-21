@@ -2,10 +2,54 @@ import fs from "fs";
 import fetch from "node-fetch";
 import { getIntrospectionQuery, buildClientSchema, printSchema } from "graphql";
 
-// مقدارهای پیش‌فرض (می‌تونی از خط فرمان هم بگیری)
-const ENDPOINT = process.argv[2] || "https://share.octopus.energy/api/graphql";
-const COOKIE = process.argv[3] || "SESSION=abcd1234; other_cookie=xyz";
-const OUTPUT = process.argv[4] || "schema.graphql";
+// Default values
+let ENDPOINT = null;
+let COOKIE = null;
+const HEADERS = {};
+let OUTPUT = "schema.graphql";
+
+// Simple CLI argument parsing
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i++) {
+  switch (args[i]) {
+    case "-B":
+      COOKIE = args[i + 1];
+      i++;
+      break;
+    case "-H":
+      // Expect format: Key=Value
+      const headerArg = args[i + 1];
+      const sepIndex = headerArg.indexOf("=");
+      if (sepIndex > -1) {
+        const key = headerArg.slice(0, sepIndex).trim();
+        const value = headerArg.slice(sepIndex + 1).trim();
+        HEADERS[key] = value;
+      }
+      i++;
+      break;
+    case "-O":
+      OUTPUT = args[i + 1];
+      i++;
+      break;
+    default:
+      if (!ENDPOINT) ENDPOINT = args[i];
+      break;
+  }
+}
+
+// Check endpoint
+if (!ENDPOINT) {
+  console.error("❌ GraphQL endpoint not specified.");
+  console.error("Usage: node fetch-schema.js <ENDPOINT> [-B <cookie>] [-H <header>] [-O <output>]");
+  process.exit(1);
+}
+
+// Prepare headers
+const finalHeaders = {
+  "Content-Type": "application/json",
+  ...HEADERS,
+};
+if (COOKIE) finalHeaders["Cookie"] = COOKIE;
 
 (async () => {
   try {
@@ -13,10 +57,7 @@ const OUTPUT = process.argv[4] || "schema.graphql";
 
     const response = await fetch(ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Cookie": COOKIE,
-      },
+      headers: finalHeaders,
       body: JSON.stringify({ query: getIntrospectionQuery() }),
     });
 
