@@ -1,4 +1,4 @@
-# GraphQL Schema Fetcher
+# GraphQL Schema Fetcher and Convert to SDL
 
 A Node.js tool to fetch a GraphQL schema from a server using an **introspection query** and convert it to SDL (Schema Definition Language).  
 Supports sending custom headers and cookies for authenticated endpoints.
