@@ -30,7 +30,9 @@ npm install
 
 ## Usage
 
-node fetch-schema.js <GRAPHQL_ENDPOINT> [-B "<COOKIE>"] [-H "Key=Value"] [-O <OUTPUT_FILE>]
+```bash
+node Schema2SDL.js <GRAPHQL_ENDPOINT> [-B "<COOKIE>"] [-H "Key=Value"] [-O <OUTPUT_FILE>]
+```
 
 - <GRAPHQL_ENDPOINT>: The URL of the GraphQL server.
 
@@ -43,7 +45,7 @@ node fetch-schema.js <GRAPHQL_ENDPOINT> [-B "<COOKIE>"] [-H "Key=Value"] [-O <OU
 ## Example:
 
 ```bash
-node fetch-schema.js "https://sample.com/api/graphql" -B "SESSION=abcd1234; other_cookie=xyz" -H "Authorization=Bearer eyJ..." -H "X-Custom-Header=foo" -O schema.graphql
+node Schema2SDL.js "https://sample.com/api/graphql" -B "SESSION=abcd1234; other_cookie=xyz" -H "Authorization=Bearer eyJ..." -H "X-Custom-Header=foo" -O schema.graphql
 ```
 
 This will save the schema in SDL format to schema.graphql.
