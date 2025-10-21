@@ -1,16 +1,17 @@
 # GraphQL Schema Fetcher
 
-A small Node.js tool to fetch a GraphQL schema from a server using an **introspection query** and convert it to SDL (Schema Definition Language).  
-Supports sending custom headers such as `Cookie` for authenticated endpoints.
+A Node.js tool to fetch a GraphQL schema from a server using an **introspection query** and convert it to SDL (Schema Definition Language).  
+Supports sending custom headers and cookies for authenticated endpoints.
 
 ---
 
 ## Features
 
 - Fetch GraphQL schema via introspection query.
-- Support for custom headers (e.g., `Cookie` or `Authorization`).
+- Support for custom headers (e.g., `Authorization`, `X-Custom-Header`).
+- Support for cookie authentication using `-B`.
 - Output schema in SDL format (`.graphql`).
-- Optional CLI arguments for endpoint, cookie, and output file.
+- CLI arguments for endpoint, headers, cookies, and output file.
 
 ---
 
@@ -22,22 +23,37 @@ git clone https://github.com/yourusername/graphql-schema-fetcher.git
 cd graphql-schema-fetcher
 ```
 
-## Install dependencies:
-
+2. Install dependencies:
+```
 npm install
+```
 
-## Usage:
+## Usage
 
-node fetch-schema.js <GRAPHQL_ENDPOINT_ADDRESS> <COOKIE OR Header> <OUTPUT_FILE>
+node fetch-schema.js <GRAPHQL_ENDPOINT> [-B "<COOKIE>"] [-H "Key=Value"] [-O <OUTPUT_FILE>]
 
-<GRAPHQL_ENDPOINT>: The URL of the GraphQL server.
+- <GRAPHQL_ENDPOINT>: The URL of the GraphQL server.
 
-<COOKIE>: Optional cookie string for authentication.
+- -B "<COOKIE>": Optional cookie string for authentication.
 
-<OUTPUT_FILE>: Output filename for the SDL schema (default: schema.graphql).
+- -H "Key=Value": Optional custom header. Can be used multiple times.
 
-Example: 
-node fetch-schema.js "https://sample.com//graphql" "SESSION=abcd1234; other_cookie=xyz" "schema.graphql"
+- -O <OUTPUT_FILE>: Output filename for the SDL schema (default: schema.graphql).
 
+## Example:
+
+```bash
+node fetch-schema.js "https://sample.com/api/graphql" -B "SESSION=abcd1234; other_cookie=xyz" -H "Authorization=Bearer eyJ..." -H "X-Custom-Header=foo" -O schema.graphql
+```
 
 This will save the schema in SDL format to schema.graphql.
+
+## Notes
+
+- Ensure the GraphQL endpoint allows introspection queries.
+
+- The -B cookie argument is optional and only needed for endpoints that require session authentication.
+
+- Multiple -H headers can be passed to include any custom headers.
+
+- This tool only fetches the schema; it does not execute queries or mutations
