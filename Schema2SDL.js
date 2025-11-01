@@ -76,7 +76,13 @@ if (COOKIE) finalHeaders["Cookie"] = COOKIE;
     const sdl = printSchema(schema);
 
     fs.writeFileSync(OUTPUT, sdl);
+
+    // Calculate file size in kilobytes
+    const stats = fs.statSync(OUTPUT);
+    const fileSizeKB = (stats.size / 1024).toFixed(2);
+
     console.log(`✅ Schema saved successfully to: ${OUTPUT}`);
+    console.log(`📦 File size: ${fileSizeKB} KB`);
   } catch (err) {
     console.error("💥 Error:", err.message);
   }
